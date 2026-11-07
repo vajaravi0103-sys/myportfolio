@@ -32,6 +32,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
       - name: Build Flutter Web
         run: flutter build web --release --base-href /myportfolio/
 
