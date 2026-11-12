@@ -68,13 +68,16 @@ class SkillsScreen extends StatelessWidget {
         final isMobile = width < 600;
         final isTablet = width >= 600 && width < 1024;
 
+        final horizontalPadding =
+            isMobile ? 20.0 : (isTablet ? 40.0 : 80.0);
+
         final columns = isMobile ? 1 : (isTablet ? 2 : 3);
 
         return Container(
           width: double.infinity,
           color: background,
           padding: EdgeInsets.symmetric(
-            horizontal: isMobile ? 20 : (isTablet ? 40 : 80),
+            horizontal: horizontalPadding,
             vertical: isMobile ? 55 : 80,
           ),
           child: Center(
@@ -93,6 +96,7 @@ class SkillsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
+
                   Text(
                     'Technical Skills',
                     style: TextStyle(
@@ -102,6 +106,7 @@ class SkillsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
+
                   const Text(
                     'Technologies and tools I use to build mobile applications.',
                     style: TextStyle(
@@ -112,26 +117,28 @@ class SkillsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 35),
 
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: skillCategories.length,
-                    gridDelegate:
-                        SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: columns,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                      mainAxisExtent: 210,
-                    ),
-                    itemBuilder: (context, index) {
-                      final category = skillCategories[index];
+                  Wrap(
+                    spacing: 20,
+                    runSpacing: 20,
+                    children: skillCategories.map((category) {
+                      final cardWidth = isMobile
+                          ? width - (horizontalPadding * 2)
+                          : (constraints.maxWidth -
+                                  (horizontalPadding * 2) -
+                                  (20 * (columns - 1))) /
+                              columns;
 
-                      return _skillCard(
-                        title: category['title'],
-                        icon: category['icon'],
-                        skills: List<String>.from(category['skills']),
+                      return SizedBox(
+                        width: cardWidth,
+                        child: _skillCard(
+                          title: category['title'],
+                          icon: category['icon'],
+                          skills: List<String>.from(
+                            category['skills'],
+                          ),
+                        ),
                       );
-                    },
+                    }).toList(),
                   ),
                 ],
               ),
@@ -158,9 +165,11 @@ class SkillsScreen extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, color: green, size: 30),
           const SizedBox(height: 15),
+
           Text(
             title,
             style: const TextStyle(
@@ -170,6 +179,7 @@ class SkillsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 15),
+
           Wrap(
             spacing: 8,
             runSpacing: 9,
